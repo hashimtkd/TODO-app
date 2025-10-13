@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/db/sqflite/db_functions.dart';
+import 'package:todo_db/model/user.dart';
 
 final name = TextEditingController();
 final age = TextEditingController();
@@ -32,7 +34,15 @@ Widget? addSheet(BuildContext context) {
             ),
             SizedBox(height: 10),
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                if (name.text.isEmpty && age.text.isEmpty) {
+                  return;
+                }
+                final user = User(name: name.text, age: age.text);
+
+                await DbFunctions().add(user);
+                Navigator.pop(context);
+              },
               child: AppText(text: 'Add'),
             ),
           ],

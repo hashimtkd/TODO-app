@@ -1,7 +1,9 @@
+import 'package:todo_db/model/user.dart';
+
 abstract class DbInterface {
-  void add();
-  void get();
-  void edit();
-  void delete();
+  void add(User user);
+  void getAll();
+  void edit(User user);
+  void delete(User user);
   void deleteAll();
 }

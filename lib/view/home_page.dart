@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/db/sqflite/db_functions.dart';
 import 'package:todo_db/view/add_sheet.dart';
 import 'package:todo_db/view/edit_popup.dart';
 import 'package:todo_db/view/warning_popup.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    loadAll();
+  }
+
+  Future<void> loadAll() async {
+    await DbFunctions().getAll().then((_) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +31,8 @@ class HomePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton.small(
         backgroundColor: Colors.black,
         foregroundColor: Colors.white60,
-        onPressed: () {
-          showModalBottomSheet(
+        onPressed: () async {
+          await showModalBottomSheet(
             isScrollControlled: true,
             context: context,
 
@@ -27,6 +45,7 @@ class HomePage extends StatelessWidget {
               );
             },
           );
+          await loadAll();
         },
         child: Icon(Icons.add),
       ),
@@ -49,27 +68,37 @@ class HomePage extends StatelessWidget {
             Expanded(
               child: ListView.builder(
                 itemBuilder: (BuildContext context, int index) {
+                  final list = userList[index];
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Card(
                       child: ListTile(
                         title: AppText(
-                          text: 'Hashim',
+                          text: list.name,
                           size: 20,
                           fontWeight: FontWeight.bold,
                         ),
-                        subtitle: AppText(text: '25'),
+                        subtitle: AppText(text: list.age),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              onPressed: () {
-                                editPopup(context, name, age);
+                              onPressed: () async {
+                                await editPopup(
+                                  context,
+                                  list.name,
+                                  list.age,
+                                  list.id,
+                                );
+                                await loadAll();
                               },
                               icon: Icon(Icons.edit),
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                await DbFunctions().delete(userList[index]);
+                                await loadAll();
+                              },
                               icon: Icon(Icons.delete),
                             ),
                           ],
@@ -79,7 +108,7 @@ class HomePage extends StatelessWidget {
                   );
                 },
 
-                itemCount: 20,
+                itemCount: userList.length,
               ),
             ),
           ],

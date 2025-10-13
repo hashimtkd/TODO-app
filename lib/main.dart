@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:todo_db/db/sqflite/db_functions.dart';
 import 'package:todo_db/view/home_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DbFunctions().initialize();
   runApp(const MyApp());
 }
 

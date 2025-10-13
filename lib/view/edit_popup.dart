@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/db/sqflite/db_functions.dart';
+import 'package:todo_db/model/user.dart';
 
-void editPopup(
+Future<void> editPopup(
   BuildContext context,
-  TextEditingController name,
-  TextEditingController age,
-) {
-  showDialog(
+  String name,
+  String age,
+  int? key,
+) async {
+  final nameController = TextEditingController(text: name);
+  final ageController = TextEditingController(text: age);
+
+  await showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
@@ -15,7 +21,7 @@ void editPopup(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
-              controller: name,
+              controller: nameController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'name',
@@ -23,7 +29,7 @@ void editPopup(
             ),
             SizedBox(height: 10),
             TextField(
-              controller: age,
+              controller: ageController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: 'age',
@@ -41,7 +47,19 @@ void editPopup(
                 child: AppText(text: 'No'),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  if (nameController.text.isEmpty &&
+                      ageController.text.isEmpty) {
+                    return;
+                  }
+                  final user = User(
+                    name: nameController.text,
+                    age: ageController.text,
+                    id: key,
+                  );
+                  await DbFunctions().edit(user);
+                  Navigator.pop(context);
+                },
                 child: AppText(text: 'Save'),
               ),
             ],
