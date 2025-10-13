@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/db/hive/db_functoins.dart';
+import 'package:todo_db/view/home_page.dart';
 
 void warning(BuildContext context) {
   showDialog(
@@ -20,7 +22,11 @@ void warning(BuildContext context) {
               ),
 
               TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  await DbFunctoins().deleteAll();
+                  await homePageKey.currentState?.loadAll();
+                  Navigator.pop(context);
+                },
                 child: AppText(text: 'Yes'),
               ),
             ],

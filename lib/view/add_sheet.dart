@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/db/hive/db_functoins.dart';
+import 'package:todo_db/model/user.dart';
 
 final name = TextEditingController();
 final age = TextEditingController();
@@ -32,7 +34,11 @@ Widget? addSheet(BuildContext context) {
             ),
             SizedBox(height: 10),
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                await add(name.text, age.text);
+
+                Navigator.pop(context);
+              },
               child: AppText(text: 'Add'),
             ),
           ],
@@ -40,4 +46,14 @@ Widget? addSheet(BuildContext context) {
       ),
     ),
   );
+}
+
+Future<void> add(String name, String age) async {
+  if (name.isEmpty || age.isEmpty) {
+    return;
+  }
+
+  final user = User(name: name, age: age);
+  print(user);
+  await DbFunctoins().addUser(user);
 }
