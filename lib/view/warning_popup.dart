@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/view/home_page.dart';
 
 void warning(BuildContext context) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Center(child: AppText(text: 'Warning!')),
-        content: AppText(text: 'Are you sure you want to delete all items?'),
+        title: Text('Are you sure?', style: TextStyle(color: Colors.blue)),
+        content: AppText(text: 'Quit without saving?'),
         actions: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -16,12 +17,15 @@ void warning(BuildContext context) {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: AppText(text: 'No'),
+                child: Text('Cancel', style: TextStyle(color: Colors.blue)),
               ),
 
               TextButton(
-                onPressed: () {},
-                child: AppText(text: 'Yes'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text('Yes', style: TextStyle(color: Colors.blue)),
               ),
             ],
           ),

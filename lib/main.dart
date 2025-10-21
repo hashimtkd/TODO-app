@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todo_db/db/db%20interface/hive/db%20functions/db_functions.dart';
+import 'package:todo_db/model/todo.dart';
 import 'package:todo_db/view/home_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  if (!Hive.isAdapterRegistered(TodoAdapter().typeId)) {
+    Hive.registerAdapter(TodoAdapter());
+  }
+
+  hiveBox = await Hive.openBox<Todo>('todo');
+
   runApp(const MyApp());
 }
 
