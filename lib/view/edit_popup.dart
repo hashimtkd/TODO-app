@@ -8,7 +8,7 @@ import 'package:todo_db/model/todo.dart';
 
 class EditPopup extends StatefulWidget {
   String task;
-  String date;
+  DateTime date;
   int? id;
 
   EditPopup({super.key, required this.task, required this.date, this.id});
@@ -26,7 +26,9 @@ class _EditPopupState extends State<EditPopup> {
   void initState() {
     super.initState();
     taskController = TextEditingController(text: widget.task);
-    dateController = TextEditingController(text: widget.date);
+    dateController = TextEditingController(
+      text: DateFormat('dd-MM-yyyy').format(widget.date),
+    );
   }
 
   @override

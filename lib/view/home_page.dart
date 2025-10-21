@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                                   builder: (BuildContext context) {
                                     return EditPopup(
                                       task: todoList[index].task,
-                                      date: todoList[index].date.toString(),
+                                      date: todoList[index].date,
                                       id: todoList[index].id,
                                     );
                                   },
