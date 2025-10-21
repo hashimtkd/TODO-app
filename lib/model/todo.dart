@@ -1,14 +1,17 @@
-import 'package:hive_flutter/adapters.dart';
-part 'todo.g.dart';
+import 'package:intl/intl.dart';
 
-@HiveType(typeId: 0)
 class Todo {
-  @HiveField(0)
   int? id;
-  @HiveField(1)
+
   final String task;
-  @HiveField(2)
+
   final DateTime date;
 
   Todo({required this.task, required this.date, this.id});
+
+  factory Todo.fromMap(Map<dynamic, dynamic> map) => Todo(
+    task: map['task'] as String,
+    date: DateFormat('dd-MM-yyyy').parse(map['date'] as String),
+    id: map['id'] as int?,
+  );
 }

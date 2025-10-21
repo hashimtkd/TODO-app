@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
-import 'package:todo_db/db/db%20interface/hive/db%20functions/db_functions.dart';
+import 'package:todo_db/db/db%20interface/sqflite/db%20functions/db_functions.dart';
 import 'package:todo_db/model/todo.dart';
 import 'package:todo_db/view/warning_popup.dart';
 

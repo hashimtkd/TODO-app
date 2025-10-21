@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
-import 'package:todo_db/view/home_page.dart';
 
 void warning(BuildContext context) {
   showDialog(

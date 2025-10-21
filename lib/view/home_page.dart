@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_db/custom%20widgets/custom_widgets.dart';
-import 'package:todo_db/db/db%20interface/hive/db%20functions/db_functions.dart';
+import 'package:todo_db/db/db%20interface/sqflite/db%20functions/db_functions.dart';
 import 'package:todo_db/view/add_sheet.dart';
 import 'package:todo_db/view/edit_popup.dart';
 
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                                   builder: (BuildContext context) {
                                     return EditPopup(
                                       task: todoList[index].task,
-                                      date: todoList[index].date.toString(),
+                                      date: todoList[index].date,
                                       id: todoList[index].id,
                                     );
                                   },
