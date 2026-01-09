@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_db/custom%20widgets/custom_widgets.dart';
+import 'package:todo_db/components/app_text.dart';
 import 'package:todo_db/view/home_page.dart';
 
 void warning(BuildContext context) {
@@ -22,8 +22,13 @@ void warning(BuildContext context) {
 
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return HomePage();
+                      },
+                    ),
+                  );
                 },
                 child: Text('Yes', style: TextStyle(color: Colors.blue)),
               ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_db/custom%20widgets/custom_widgets.dart';
-import 'package:todo_db/db/db%20interface/hive/db%20functions/db_functions.dart';
+import 'package:todo_db/components/app_text.dart';
+import 'package:todo_db/components/app_textField.dart';
+import 'package:todo_db/components/warning_popup.dart';
+import 'package:todo_db/db/db%20functions/db_functions.dart';
 import 'package:todo_db/model/todo.dart';
-import 'package:todo_db/view/warning_popup.dart';
 
 class AddSheet extends StatefulWidget {
   const AddSheet({super.key});
@@ -15,7 +16,9 @@ class AddSheet extends StatefulWidget {
 class _AddSheetState extends State<AddSheet> {
   final taskControl = TextEditingController();
   final dateControl = TextEditingController();
+  final timeControl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,15 +65,10 @@ class _AddSheetState extends State<AddSheet> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
+                child: AppTextfield(
                   controller: taskControl,
-                  decoration: InputDecoration(hintText: 'Enter Task Here'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Task';
-                    }
-                    return null;
-                  },
+                  validation: 'Please enter your Task',
+                  hintText: "Enter Task Here",
                 ),
               ),
               SizedBox(height: 10),
@@ -81,28 +79,39 @@ class _AddSheetState extends State<AddSheet> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  keyboardType: TextInputType.datetime,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter date';
-                    }
-                    try {
-                      DateFormat('dd-MM-yyyy').parseStrict(value);
-                    } catch (e) {
-                      return 'Please enter a valid date (dd-MM-yyyy)';
-                    }
-                    return null;
+                child: AppTextfield(
+                  textInputType: TextInputType.datetime,
+                  controller: dateControl,
+                  validation: 'Please enter date',
+                  hintText: 'Date not set',
+                  isDate: true,
+                  onTap: () async {
+                    await showDate();
+                  },
+                  onPressed: () async {
+                    await showDate();
+                  },
+                ),
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  AppText(text: 'Due time', fontWeight: FontWeight.bold),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: AppTextfield(
+                  isDate: false,
+                  onTap: () async {
+                    await showTime();
+                  },
+                  onPressed: () async {
+                    await showTime();
                   },
                   controller: dateControl,
-                  onTap: () => showDate(),
-                  decoration: InputDecoration(
-                    suffixIcon: IconButton(
-                      onPressed: showDate,
-                      icon: Icon(Icons.calendar_month),
-                    ),
-                    hintText: 'Date not set',
-                  ),
+                  validation: 'Time not set',
+                  hintText: 'Please enter time',
                 ),
               ),
             ],
@@ -112,7 +121,7 @@ class _AddSheetState extends State<AddSheet> {
     );
   }
 
-  void showDate() async {
+  Future<void> showDate() async {
     DateTime? date = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -127,8 +136,12 @@ class _AddSheetState extends State<AddSheet> {
     });
   }
 
+  Future<void> showTime() async {
+    await showTimePicker(context: context, initialTime: TimeOfDay.now());
+  }
+
   Future<void> add(String task, String date) async {
-    if (task.isNotEmpty && date.isNotEmpty) {
+    if (task.isNotEmpty && date.isNotEmpty && timeControl.text.isNotEmpty) {
       DateTime _date = DateFormat('dd-MM-yyyy').parseStrict(date);
       final todo = Todo(task: task, date: _date);
       await DbFunctions().add(todo);

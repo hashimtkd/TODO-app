@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:todo_db/db/db%20interface/db_interface.dart';
+import 'package:todo_db/db/dbInterface/db_interface.dart';
 import 'package:todo_db/model/todo.dart';
 
 Box? hiveBox;

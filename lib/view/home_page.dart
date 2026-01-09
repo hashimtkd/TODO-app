@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:todo_db/custom%20widgets/custom_widgets.dart';
-import 'package:todo_db/db/db%20interface/hive/db%20functions/db_functions.dart';
+import 'package:todo_db/components/app_text.dart';
+import 'package:todo_db/components/edit_popup.dart';
+import 'package:todo_db/db/db%20functions/db_functions.dart';
 import 'package:todo_db/view/add_sheet.dart';
-import 'package:todo_db/view/edit_popup.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -49,6 +49,8 @@ class _HomePageState extends State<HomePage> {
         shadowColor: Colors.black,
         elevation: 5,
       ),
+
+      drawer: Drawer(),
       body: todoList.isEmpty
           ? Stack(
               children: [
