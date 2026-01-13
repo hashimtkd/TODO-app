@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:todo_db/components/app_text.dart';
-import 'package:todo_db/db/db%20functions/db_functions.dart';
+import 'package:todo_db/components/date_picker.dart';
+import 'package:todo_db/controllers/todo_controller.dart';
 import 'package:todo_db/model/todo.dart';
 
 class EditPopup extends StatefulWidget {
@@ -20,7 +22,9 @@ class EditPopup extends StatefulWidget {
 class _EditPopupState extends State<EditPopup> {
   late TextEditingController taskController;
   late TextEditingController dateController;
+
   final _formKey = GlobalKey<FormState>();
+  TodoController controller = Get.find<TodoController>();
 
   @override
   void initState() {
@@ -52,7 +56,9 @@ class _EditPopupState extends State<EditPopup> {
             ),
             SizedBox(height: 10),
             TextFormField(
-              onTap: () => showDate(),
+              onTap: () async {
+                dateController.text = await showDate();
+              },
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter  updated Date';
@@ -82,18 +88,18 @@ class _EditPopupState extends State<EditPopup> {
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  DateTime _date = DateFormat(
+                  DateTime date = DateFormat(
                     'dd-MM-yyyy',
                   ).parseStrict(dateController.text);
                   final todo = Todo(
                     task: taskController.text,
-                    date: _date,
+                    date: date,
                     id: widget.id,
                   );
-                  await DbFunctions().edit(todo);
-                  await DbFunctions().getAll();
+                  await controller.edit(todo);
+                  await controller.getAll();
 
-                  Navigator.pop(context);
+                  Get.back();
                 }
               },
               child: AppText(text: 'Save'),
@@ -102,20 +108,5 @@ class _EditPopupState extends State<EditPopup> {
         ),
       ],
     );
-  }
-
-  void showDate() async {
-    DateTime? date = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2030),
-    );
-    if (date == null) return;
-    var formatter = DateFormat('dd-MM-yyyy');
-    String formattedDate = formatter.format(date);
-    setState(() {
-      dateController.text = formattedDate;
-    });
   }
 }

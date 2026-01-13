@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:todo_db/controllers/todo_controller.dart';
 import 'package:todo_db/db/db%20functions/db_functions.dart';
 import 'package:todo_db/model/todo.dart';
 import 'package:todo_db/view/home_page.dart';
@@ -23,7 +24,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      initialBinding: BindingsBuilder(() {
+        Get.put(TodoController());
+      }),
       debugShowCheckedModeBanner: false,
       title: 'My TODO',
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:get/get.dart';
 import 'package:todo_db/components/app_text.dart';
 import 'package:todo_db/components/app_textField.dart';
 import 'package:todo_db/components/warning_popup.dart';
-import 'package:todo_db/db/db%20functions/db_functions.dart';
-import 'package:todo_db/model/todo.dart';
+import 'package:todo_db/controllers/todo_controller.dart';
 
 class AddSheet extends StatefulWidget {
   const AddSheet({super.key});
@@ -14,10 +13,9 @@ class AddSheet extends StatefulWidget {
 }
 
 class _AddSheetState extends State<AddSheet> {
-  final taskControl = TextEditingController();
-  final dateControl = TextEditingController();
-  final timeControl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  TodoController controller = Get.find<TodoController>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +25,9 @@ class _AddSheetState extends State<AddSheet> {
         foregroundColor: Colors.white60,
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
-            await add(taskControl.text, dateControl.text);
+            controller.add();
 
-            Navigator.pop(context);
+            Get.back();
           }
         },
         child: Icon(Icons.check),
@@ -42,10 +40,10 @@ class _AddSheetState extends State<AddSheet> {
           onPressed: () {
             warning(context);
           },
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
         ),
         backgroundColor: Color.fromARGB(255, 148, 219, 250),
-        title: AppText(text: 'New Task', fontWeight: FontWeight.w500),
+        title: const AppText(text: 'New Task', fontWeight: FontWeight.w500),
         centerTitle: true,
       ),
       body: Padding(
@@ -55,7 +53,7 @@ class _AddSheetState extends State<AddSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
+              const Row(
                 children: [
                   AppText(
                     text: 'What is to be done?',
@@ -66,13 +64,13 @@ class _AddSheetState extends State<AddSheet> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AppTextfield(
-                  controller: taskControl,
+                  controller: controller.taskControl,
                   validation: 'Please enter your Task',
                   hintText: "Enter Task Here",
                 ),
               ),
-              SizedBox(height: 10),
-              Row(
+              const SizedBox(height: 10),
+              const Row(
                 children: [
                   AppText(text: 'Due date', fontWeight: FontWeight.bold),
                 ],
@@ -81,70 +79,43 @@ class _AddSheetState extends State<AddSheet> {
                 padding: const EdgeInsets.all(8.0),
                 child: AppTextfield(
                   textInputType: TextInputType.datetime,
-                  controller: dateControl,
+                  controller: controller.dateControl,
                   validation: 'Please enter date',
                   hintText: 'Date not set',
                   isDate: true,
                   onTap: () async {
-                    await showDate();
+                    await controller.showDateController();
                   },
                   onPressed: () async {
-                    await showDate();
+                    await controller.showDateController();
                   },
                 ),
               ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  AppText(text: 'Due time', fontWeight: FontWeight.bold),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AppTextfield(
-                  isDate: false,
-                  onTap: () async {
-                    await showTime();
-                  },
-                  onPressed: () async {
-                    await showTime();
-                  },
-                  controller: dateControl,
-                  validation: 'Time not set',
-                  hintText: 'Please enter time',
-                ),
-              ),
+              const SizedBox(height: 10),
+              //const Row(
+              //children: [
+              //AppText(text: 'Due time', fontWeight: FontWeight.bold),
+              //],
+              // ),
+              //Padding(
+              // padding: const EdgeInsets.all(8.0),
+              // child: AppTextfield(
+              //  isDate: false,
+              // onTap: () async {
+              // await controller.showTime();
+              // },
+              // onPressed: () async {
+              // await controller.showTime();
+              // },
+              // controller: controller.dateControl,
+              // validation: 'Time not set',
+              // hintText: 'Please enter time',
+              //),
+              //),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Future<void> showDate() async {
-    DateTime? date = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2030),
-    );
-    if (date == null) return;
-    var formatter = DateFormat('dd-MM-yyyy');
-    String formattedDate = formatter.format(date);
-    setState(() {
-      dateControl.text = formattedDate;
-    });
-  }
-
-  Future<void> showTime() async {
-    await showTimePicker(context: context, initialTime: TimeOfDay.now());
-  }
-
-  Future<void> add(String task, String date) async {
-    if (task.isNotEmpty && date.isNotEmpty && timeControl.text.isNotEmpty) {
-      DateTime _date = DateFormat('dd-MM-yyyy').parseStrict(date);
-      final todo = Todo(task: task, date: _date);
-      await DbFunctions().add(todo);
-    }
   }
 }
